@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  db:
+    image: mariadb
+    container_name: db
+    environment:
+      - MARIADB_ROOT_PASSWORD=12321
+      - MARIADB_DATABASE=arise
+    ports:
+      - 3306:3306
+    volumes:
+      - /var/lib/mysql
+
+  api:
+    image: docker.io/earthyim/incuapi
+    build: .
+    environment:
+      - APP_NAME=earthyim
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USERNAME=root
+      - DB_PASSWORD=12321
+      - DB_DATABASE=arise
+    ports:
+      - 8000:3000
+    depends_on:
+      - db
+    restart: always
+

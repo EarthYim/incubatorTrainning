@@ -27,16 +27,14 @@ var wallets = make(map[string]Wallet) //for storing wallet in memory
 
 func CreateWalletHandler(c *gin.Context) {
 	wt := &Wallet{}
-	request := &Request{}
+	//request := &Request{}
 
-	err := c.ShouldBindJSON(request)
+	err := c.ShouldBindJSON(wt)
 	if err != nil {
 		log.Println("err")
 	}
 
 	wt.ID = uuid.NewString()
-	wt.Owner = request.Owner
-	wt.Balance = request.Balance
 
 	wallets[wt.ID] = *wt
 	log.Printf("%#v\n", *wt)
@@ -77,8 +75,11 @@ func DepositByIDHandler(c *gin.Context) {
 		})
 	}
 
-	dep := &amount{}
-	err := c.ShouldBindJSON(dep)
+	// dep := &amount{}
+	var dep struct {
+		Amount float64 `json:"amount"`
+	}
+	err := c.ShouldBindJSON(&dep)
 	if err != nil {
 		log.Println("err")
 	}
@@ -102,8 +103,11 @@ func WithdrawByIDHandler(c *gin.Context) {
 		})
 	}
 
-	wit := &amount{}
-	err := c.ShouldBindJSON(wit)
+	// wit := &Amount{}
+	var wit struct {
+		Amount float64 `json:"amount"`
+	}
+	err := c.ShouldBindJSON(&wit)
 	if err != nil {
 		log.Println("err")
 	}
@@ -113,6 +117,7 @@ func WithdrawByIDHandler(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{
 			"error": "Insuffucient Fund",
 		})
+		wt.Balance = wt.Balance + wit.Amount
 	}
 	log.Println("Balance:", wt.Balance)
 	wallets[wt.ID] = wt

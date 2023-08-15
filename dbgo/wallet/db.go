@@ -1,4 +1,4 @@
-package db
+package wallet
 
 import (
 	"database/sql"
@@ -92,14 +92,14 @@ func SelectWalletById(db *sql.DB, walletID int) (error, Wallet) {
 	return nil, wt
 }
 
-func deleteWallet(db *sql.DB, walletID int) error {
-	query := `DELETE FROM wallet WHERE id = $1`
-	_, err := db.Exec(query, walletID)
-	if err != nil {
-		return err
-	}
-	return nil
-}
+// func deleteWallet(db *sql.DB, walletID int) error {
+// 	query := `DELETE FROM wallet WHERE id = $1`
+// 	_, err := db.Exec(query, walletID)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	return nil
+// }
 
 // func main() {
 // 	conn, err := sql.Open("postgres", "postgres://ivzeojed:0IZOHrr423bv7Mf-W9cGGozq1NPfJYBf@tiny.db.elephantsql.com/ivzeojed")

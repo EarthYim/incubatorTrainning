@@ -2,7 +2,6 @@ package wallet
 
 import (
 	"database/sql"
-	"dbgo/db"
 	"log"
 	"net/http"
 	"strconv"
@@ -10,11 +9,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Wallet struct {
-	ID      string  `json:"id"`
-	Owner   string  `json:"owner"`
-	Balance float64 `json:"balance"`
-}
+// type Wallet struct {
+// 	ID      string  `json:"id"`
+// 	Owner   string  `json:"owner"`
+// 	Balance float64 `json:"balance"`
+// }
 
 type Request struct {
 	Owner   string  `json:"owner"`
@@ -37,7 +36,7 @@ func CreateWalletHandler(c *gin.Context) {
 	// wt.ID = uuid.NewString()
 
 	var id int
-	err, id = db.InsertWallet(Conn, request.Owner, request.Balance)
+	err, id = InsertWallet(Conn, request.Owner, request.Balance)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -55,7 +54,7 @@ func GetWalletByIDHandler(c *gin.Context) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	wt := db.Wallet{}
+	wt := Wallet{}
 	// wt, ok := wallets[id]
 	// if !ok {
 	// 	c.JSON(http.StatusNotFound, gin.H{
@@ -63,7 +62,7 @@ func GetWalletByIDHandler(c *gin.Context) {
 	// 	})
 	// }
 
-	err, wt = db.SelectWalletById(Conn, id)
+	err, wt = SelectWalletById(Conn, id)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -75,14 +74,14 @@ func GetBalanceByIDHandler(c *gin.Context) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	wt := db.Wallet{}
+	wt := Wallet{}
 	// wt, ok := wallets[id]
 	// if !ok {
 	// 	c.JSON(http.StatusNotFound, gin.H{
 	// 		"error": "wallet not found!",
 	// 	})
 	// }
-	err, wt = db.SelectWalletById(Conn, id)
+	err, wt = SelectWalletById(Conn, id)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -107,16 +106,16 @@ func DepositByIDHandler(c *gin.Context) {
 	}
 	log.Println("Deposit Amount:", dep.Amount)
 
-	wt := db.Wallet{}
+	wt := Wallet{}
 
-	err, wt = db.SelectWalletById(Conn, id)
+	err, wt = SelectWalletById(Conn, id)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	wt.Balance = wt.Balance + dep.Amount
 
-	err = db.UpdateWalletBalance(Conn, id, wt.Balance)
+	err = UpdateWalletBalance(Conn, id, wt.Balance)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -142,9 +141,9 @@ func WithdrawByIDHandler(c *gin.Context) {
 	}
 	log.Println("Withdraw Amount:", wit.Amount)
 
-	wt := db.Wallet{}
+	wt := Wallet{}
 
-	err, wt = db.SelectWalletById(Conn, id)
+	err, wt = SelectWalletById(Conn, id)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -155,7 +154,7 @@ func WithdrawByIDHandler(c *gin.Context) {
 		})
 		wt.Balance = wt.Balance + wit.Amount
 	} else {
-		err = db.UpdateWalletBalance(Conn, id, wt.Balance)
+		err = UpdateWalletBalance(Conn, id, wt.Balance)
 		if err != nil {
 			log.Fatal(err)
 		}

@@ -22,7 +22,7 @@ func InsertWallet(db *sql.DB, owner string, balance float64) (error, int) {
 	var id int
 	err := row.Scan(&id)
 	if err != nil {
-		log.Fatal(err)
+		return err, -1
 	}
 
 	log.Println("last insert id: ", id)

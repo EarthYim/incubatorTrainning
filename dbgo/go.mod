@@ -3,6 +3,7 @@ module dbgo
 go 1.20
 
 require (
+	github.com/DATA-DOG/go-sqlmock v1.5.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/lib/pq v1.10.9
 )
